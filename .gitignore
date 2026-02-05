@@ -1,0 +1,21 @@
+# temporary directories
+.vs
+x64
+x86
+*.user
+ApplesGame/
+ApplesGameReference/
+BallsManager/
+Flowchart/
+GuessingGame/
+HelloWorld/
+PolishCalc/
+SFML/
+SFMLTemplate/
+SimpleSnakeGame/
+SnakeGame/
+Debug/
+Release/
+TemperatureConversioin/
+*.bat
+new_project.ps1
