@@ -10,11 +10,10 @@ namespace ArkanoidGame
 	void GameStatePlayingData::Init()
 	{
 		assert(font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
-		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + "Death.wav"));
 
 		background.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 		background.setPosition(0.f, 0.f);
-		background.setFillColor(sf::Color(0, 200, 0));
+		background.setFillColor(sf::Color::Black);
 
 
 		scoreText.setFont(font);
@@ -27,7 +26,6 @@ namespace ArkanoidGame
 		inputHintText.setString("Use arrow keys to move, ESC to pause");
 		inputHintText.setOrigin(GetTextOrigin(inputHintText, { 1.f, 0.f }));
 
-		gameOverSound.setBuffer(gameOverSoundBuffer);
 	}
 
 	void GameStatePlayingData::HandleWindowEvent(const sf::Event& event)
@@ -41,31 +39,31 @@ namespace ArkanoidGame
 		}
 	}
 
-	void GameStatePlayingData::Update(float timeDelta)
+	void GameStatePlayingData::Update (float timeDelta)
 	{
-		const bool isGameFinished = false;
+		platform.Update(timeDelta);
 
-		if (!isGameFinished)
+		ball.Update(timeDelta);
+
+		if (ball.GetBounds().intersects(platform.GetBounds()))
 		{
-			gameOverSound.play();
+			ball.CollisionWithPlatform();
+		}
 
-			Game& game = Application::Instance().GetGame();
-
-			game.PushState(GameStateType::GameOver, false);
+		if (ball.GetBounds().top > SCREEN_HEIGHT)
+		{
+			Application::Instance().GetGame().PushState(GameStateType::GameOver, false);
 		}
 	}
 
 	void GameStatePlayingData::Draw(sf::RenderWindow& window)
 	{
-		// Draw background
 		window.draw(background);
 
-		scoreText.setOrigin(GetTextOrigin(scoreText, { 0.f, 0.f }));
-		scoreText.setPosition(10.f, 10.f);
-		window.draw(scoreText);
+		platform.Draw(window);
+		ball.Draw(window);
 
-		sf::Vector2f viewSize = window.getView().getSize();
-		inputHintText.setPosition(viewSize.x - 10.f, 10.f);
+		window.draw(scoreText);
 		window.draw(inputHintText);
 	}
 }

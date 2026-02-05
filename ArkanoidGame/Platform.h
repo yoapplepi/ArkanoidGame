@@ -11,7 +11,7 @@ namespace ArkanoidGame
 	public:
 		Platform();
 
-		void Update(float timeDelta, const sf::RenderWindow& window);
+		void Update(float timeDelta);
 		void Draw(sf::RenderWindow& window);
 
 		sf::FloatRect GetBounds() const { return shape.getGlobalBounds(); }

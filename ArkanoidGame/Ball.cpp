@@ -54,7 +54,7 @@ namespace ArkanoidGame
 		window.draw(shape);
 	}
 
-	void Ball::CollisionWothPlatform()
+	void Ball::CollisionWithPlatform()
 	{
 		if (direction.y > 0)
 		{

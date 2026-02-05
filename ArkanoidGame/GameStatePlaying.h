@@ -1,6 +1,8 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
+#include "Platform.h"
+#include "Ball.h"
 
 
 namespace ArkanoidGame
@@ -16,18 +18,17 @@ namespace ArkanoidGame
 		void Draw(sf::RenderWindow& window);
 
 	private:
-		// Resources
-		sf::Texture appleTexture;
-		sf::Texture rockTexture;
-		sf::Font font;
-		sf::SoundBuffer eatAppleSoundBuffer;
-		sf::SoundBuffer gameOverSoundBuffer;
+		
+		Platform platform;
+		Ball ball;
 
-		// UI data
+
+		sf::Font font;
 		sf::Text scoreText;
-		sf::Text inputHintText;
 		sf::RectangleShape background;
 
+		// UI data
+		sf::Text inputHintText;
 		sf::Sound gameOverSound;
 	};
 

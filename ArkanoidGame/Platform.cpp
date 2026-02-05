@@ -13,40 +13,26 @@ namespace ArkanoidGame
 		shape.setPosition((SCREEN_WIDTH - shape.getSize().x) / 2, SCREEN_HEIGHT - shape.getSize().y - 10.f);
 	}
 
-	void Platform::Update(float timeDelta, const sf::RenderWindow& window)
+	void Platform::Update(float timeDelta)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			float newX = shape.getPosition().x - speed * timeDelta;
-			if (newX < 0)
-				newX = 0;
-			shape.setPosition(newX, shape.getPosition().y);
+		float speed = 500.f; 
+		sf::Vector2f currentPos = shape.getPosition();
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			currentPos.x -= speed * timeDelta;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			float newX = shape.getPosition().x + speed * timeDelta;
-			if (newX + shape.getSize().x > SCREEN_WIDTH)
-				newX = SCREEN_WIDTH - shape.getSize().x;
-			shape.setPosition(newX, shape.getPosition().y);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			currentPos.x += speed * timeDelta;
 		}
 
-		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-		sf::Vector2f worldPos = window.mapPixelToCoords(mousePosition);
+		// ќграничиваем, чтобы не улетала за экран
+		// (width Ч это ширина твоей платформы, проверь еЄ им€ в классе)
+		float platformWidth = shape.getSize().x;
+		if (currentPos.x < 0) currentPos.x = 0;
+		if (currentPos.x > SCREEN_WIDTH - platformWidth) currentPos.x = SCREEN_WIDTH - platformWidth;
 
-		shape.setPosition(worldPos.x, shape.getPosition().y);
-
-		float halfWidth = shape.getSize().x / 2.f;
-		float currentX = shape.getPosition().x;
-
-		if (currentX - halfWidth < 0)
-		{
-			shape.setPosition(halfWidth, shape.getPosition().y);
-		}
-
-		if (currentX + halfWidth > SCREEN_WIDTH)
-		{
-			shape.setPosition(SCREEN_WIDTH - halfWidth, shape.getPosition().y);
-		}
+		// ”станавливаем обновленную позицию обратно
+		shape.setPosition(currentPos);
 	}
 	void Platform::Draw(sf::RenderWindow& window)
 	{
