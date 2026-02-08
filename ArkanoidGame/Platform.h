@@ -11,9 +11,8 @@ namespace ArkanoidGame
 	{
 
 	public:
-		Platform() = default;
+		Platform(const sf::Vector2f& position);
 
-		void Init()override;
 		void Update(float timeDelta)override;
 
 		bool CheckCollisionWithBall(const Ball& ball)const;
