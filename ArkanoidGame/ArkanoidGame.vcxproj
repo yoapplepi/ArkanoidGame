@@ -165,6 +165,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameStateData.cpp" />
+    <ClCompile Include="GameStateWinData.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameMain.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateData.h" />
+    <ClInclude Include="GameStateWinData.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameSettings.h" />
