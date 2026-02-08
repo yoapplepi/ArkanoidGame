@@ -1,4 +1,5 @@
 #pragma once
+#include "GameStateData.h"
 #include <SFML/Graphics.hpp>
 
 namespace ArkanoidGame
@@ -19,21 +20,29 @@ namespace ArkanoidGame
 	public:
 		GameState() = default;
 		GameState(GameStateType type, bool isExclusivelyVisible);
+		GameState(const GameState& state) = delete;
+		GameState(GameState&& state) { operator=(std::move(state)); }
 
 		~GameState();
 
-		GameState(const GameState& other);
-		GameState& operator = (const GameState& other);
-
-		GameState(GameState&& other) noexcept;
-		GameState& operator = (GameState&& other) noexcept;
+		GameState& operator= (const GameState& state) = delete;
+		GameState& operator= (GameState&& state) noexcept {
+			type = state.type;
+			data = std::move(state.data);
+			isExclusivelyVisible = state.isExclusivelyVisible;
+			state.data = nullptr;
+			return *this;
+		}
 
 		GameStateType GetType() const { return type; }
-		bool IsExclusivelyVisible() const { return isExclusivelyVisible; }
+		bool IsExclusivelyVisible() const
+		{
+			return isExclusivelyVisible;
+		}
 
 		template<class T>
 		T* GetData() const {
-			return static_cast<T*>(data);
+			return static_cast<T>(data);
 		}
 
 		void Update(float timeDelta);
@@ -46,7 +55,7 @@ namespace ArkanoidGame
 
 	private:
 		GameStateType type = GameStateType::None;
-		void* data = nullptr;
+		std::unique_ptr<GameStateData> data = nullptr;
 		bool isExclusivelyVisible = false;
 	};
 }

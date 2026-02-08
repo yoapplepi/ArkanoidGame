@@ -10,11 +10,11 @@ namespace ArkanoidGame
 	void GameStatePlayingData::Init()
 	{
 		assert(font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
+		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + "Death.wav"));
 
 		background.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 		background.setPosition(0.f, 0.f);
-		background.setFillColor(sf::Color::Black);
-
+		background.setFillColor(sf::Color(0, 0, 0));
 
 		scoreText.setFont(font);
 		scoreText.setCharacterSize(24);
@@ -26,6 +26,15 @@ namespace ArkanoidGame
 		inputHintText.setString("Use arrow keys to move, ESC to pause");
 		inputHintText.setOrigin(GetTextOrigin(inputHintText, { 1.f, 0.f }));
 
+		gameObjects.emplace_back(std::make_shared<Platform>());
+		gameObjects.emplace_back(std::make_shared<Ball>());
+
+		for (auto&& object : gameObjects) {
+			object->Init();
+		}
+
+		// Init sounds
+		gameOverSound.setBuffer(gameOverSoundBuffer);
 	}
 
 	void GameStatePlayingData::HandleWindowEvent(const sf::Event& event)
@@ -39,31 +48,50 @@ namespace ArkanoidGame
 		}
 	}
 
-	void GameStatePlayingData::Update (float timeDelta)
+	void GameStatePlayingData::Update(float timeDelta)
 	{
-		platform.Update(timeDelta);
-
-		ball.Update(timeDelta);
-
-		if (ball.GetBounds().intersects(platform.GetBounds()))
+		for (auto&& object : gameObjects) 
 		{
-			ball.CollisionWithPlatform();
+			object->Update(timeDelta);
 		}
 
-		if (ball.GetBounds().top > SCREEN_HEIGHT)
+		const Platform* platform = (Platform*)gameObjects[0].get();
+		Ball* ball = (Ball*)gameObjects[1].get();
+
+		const bool isCollision = platform->CheckCollisionWithBall(*ball);
+		if (isCollision) 
 		{
-			Application::Instance().GetGame().PushState(GameStateType::GameOver, false);
+			ball->ReboundFromPlatform();
 		}
+
+		const bool isGameFinished = !isCollision && ball->GetPosition().y > platform->GetRect().top;
+
+		if (isGameFinished)
+		{
+			gameOverSound.play();
+
+			Game& game = Application::Instance().GetGame();
+
+			game.PushState(GameStateType::GameOver, false);
+		}
+
 	}
 
 	void GameStatePlayingData::Draw(sf::RenderWindow& window)
 	{
 		window.draw(background);
 
-		platform.Draw(window);
-		ball.Draw(window);
 
+		for (auto&& object : gameObjects) 
+			object->Draw(window);
+
+
+		scoreText.setOrigin(GetTextOrigin(scoreText, { 0.f, 0.f }));
+		scoreText.setPosition(10.f, 10.f);
 		window.draw(scoreText);
+
+		sf::Vector2f viewSize = window.getView().getSize();
+		inputHintText.setPosition(viewSize.x - 10.f, 10.f);
 		window.draw(inputHintText);
 	}
 }

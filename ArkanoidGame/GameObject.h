@@ -6,6 +6,9 @@ namespace ArkanoidGame
 	class GameObject
 	{
 	public:
+
+		GameObject() = default;
+
 		GameObject(const std::string& textureId, const sf::Vector2f& position, float width, float heigth);
 		virtual ~GameObject() = default;
 

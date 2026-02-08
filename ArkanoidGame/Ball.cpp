@@ -1,64 +1,45 @@
 #include "Ball.h"
 #include "GameSettings.h"
-#include <cmath>
-#include <SFML/Graphics.hpp>
+#include "Sprite.h"
+#include <assert.h>
+
+namespace
+{
+	const std::string TEXTURE_ID = "ball";
+}
 
 namespace ArkanoidGame
 {
-	Ball::Ball()
+	void Ball::Init()
 	{
-		shape.setRadius(radius);
-		shape.setFillColor(sf::Color::Yellow);
+		assert(texture.loadFromFile(TEXTURES_PATH + TEXTURE_ID + ".png"));
 
-		shape.setOrigin(radius, radius);
+		InitSprite(sprite, BALL_SIZE, BALL_SIZE, texture);
+		sprite.setPosition({ SCREEN_WIDTH / 2.0, SCREEN_HEIGHT - PLATFORM_HEIGHT - BALL_SIZE / 2.f });
 
-		shape.setPosition(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 100.f);
-
-		direction = { 0.5f, -1.f };
-
-		float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		direction /= length;
-
+		const float angle = 45.f + rand() % 90; // [45, 135] degree
+		const auto pi = std::acos(-1.f);
+		direction.x = std::cos(pi / 180.f * angle);
+		direction.y = std::sin(pi / 180.f * angle);
 	}
 
 	void Ball::Update(float timeDelta)
 	{
-		shape.move(direction * speed * timeDelta);
+		const auto position = sprite.getPosition() + BALL_SPEED * timeDelta * direction;
+		sprite.setPosition(position);
 
-		if (shape.getPosition().x - radius < 0)
-		{
-			shape.setPosition(radius, shape.getPosition().y);
-			direction.x = -direction.x;
-		}
+		if (position.x - BALL_SIZE / 2.f <= 0 || position.x + BALL_SIZE / 2.f >= SCREEN_WIDTH) 
+			direction.x *= -1;
 
-		else if(shape.getPosition().x + radius > SCREEN_WIDTH)
+		if (position.y <= 0 || position.y >= SCREEN_HEIGHT)
 		{
-			shape.setPosition(SCREEN_WIDTH - radius, shape.getPosition().y);
-			direction.x = -direction.x;
-		}
-
-		if(shape.getPosition().y - radius < 0)
-		{
-			shape.setPosition(shape.getPosition().x, radius);
-			direction.y = -direction.y;
-		}
-		else if (shape.getPosition().y + radius > SCREEN_HEIGHT)
-		{
-			shape.setPosition(shape.getPosition().x, SCREEN_HEIGHT - radius);
-			direction.y = -direction.y;
+			if (position.y - BALL_SIZE / 2.f <= 0 || position.y + BALL_SIZE / 2.f >= SCREEN_HEIGHT)
+				direction.y *= -1;
 		}
 	}
 
-	void Ball::Draw(sf::RenderWindow& window)
+	void Ball::ReboundFromPlatform()
 	{
-		window.draw(shape);
-	}
-
-	void Ball::CollisionWithPlatform()
-	{
-		if (direction.y > 0)
-		{
-			direction.y = -direction.y;
-		}
+		direction.y *= -1;
 	}
 }

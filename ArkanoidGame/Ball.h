@@ -1,25 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "GameObject.h"
 
 namespace ArkanoidGame
 {
-	class Ball
+	class Ball : public GameObject
 	{
 	public:
-		Ball();
+		Ball() = default;
 
-		void Update(float timeDelta);
-		void Draw(sf::RenderWindow& window);
+		void Init() override;
+		void Update(float timeDelta)override;
 
-		void CollisionWithPlatform();
-
-		sf::FloatRect GetBounds() const { return shape.getGlobalBounds(); }
+		void ReboundFromPlatform();
 
 	private:
-		sf::CircleShape shape;
 		sf::Vector2f direction;
-		float speed = 400.f;
-		float radius = 10.f;
-
 	};
 }

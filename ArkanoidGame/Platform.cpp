@@ -1,41 +1,65 @@
 #include "Platform.h"
+#include "Ball.h"
 #include "GameSettings.h"
+#include "Sprite.h"
+#include <algorithm>
+#include <assert.h>
 #include <SFML/Graphics.hpp>
+
+namespace
+{
+	const std::string TEXTURE_ID = "platform";
+}
 
 namespace ArkanoidGame
 {
-	Platform::Platform()
+	void Platform::Init()
 	{
-		shape.setSize(sf::Vector2f(100.f, 20.f));
-		shape.setFillColor(sf::Color::Green);
+		assert(texture.loadFromFile(TEXTURES_PATH + TEXTURE_ID + ".png"));
 
-		shape.setOrigin(shape.getSize().x / 2.f, shape.getSize().y / 2.f);
-		shape.setPosition((SCREEN_WIDTH - shape.getSize().x) / 2, SCREEN_HEIGHT - shape.getSize().y - 10.f);
+		InitSprite(sprite, PLATFORM_WIDTH, PLATFORM_HEIGHT, texture);
+		sprite.setPosition({ SCREEN_WIDTH / 2.0, SCREEN_HEIGHT - PLATFORM_HEIGHT / 2.f });
 	}
 
 	void Platform::Update(float timeDelta)
 	{
-		float speed = 500.f; 
-		sf::Vector2f currentPos = shape.getPosition();
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			currentPos.x -= speed * timeDelta;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			Move(-timeDelta * PLATFORM_SPEED);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			currentPos.x += speed * timeDelta;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			Move(timeDelta * PLATFORM_SPEED);
 		}
-
-		// ќграничиваем, чтобы не улетала за экран
-		// (width Ч это ширина твоей платформы, проверь еЄ им€ в классе)
-		float platformWidth = shape.getSize().x;
-		if (currentPos.x < 0) currentPos.x = 0;
-		if (currentPos.x > SCREEN_WIDTH - platformWidth) currentPos.x = SCREEN_WIDTH - platformWidth;
-
-		// ”станавливаем обновленную позицию обратно
-		shape.setPosition(currentPos);
 	}
-	void Platform::Draw(sf::RenderWindow& window)
+
+	void Platform::Move(float speed)
 	{
-		window.draw(shape);
+		auto position = sprite.getPosition();
+		position.x = std::clamp(position.x + speed, PLATFORM_WIDTH / 2.f, SCREEN_WIDTH - PLATFORM_WIDTH / 2.f);
+		sprite.setPosition(position);
+	}
+
+	bool Platform::CheckCollisionWithBall(const Ball& ball) const
+	{
+		auto sqr = [](float x)
+			{
+				return x * x;
+			};
+
+		const auto rect = sprite.getGlobalBounds();
+		const auto ballPos = ball.GetPosition();
+		if (ballPos.x < rect.left) {
+			return sqr(ballPos.x - rect.left) + sqr(ballPos.y - rect.top) < sqr(BALL_SIZE / 2.0);
+		}
+
+		if (ballPos.x > rect.left + rect.width) {
+			return sqr(ballPos.x - rect.left - rect.width) + sqr(ballPos.y - rect.top) < sqr(BALL_SIZE / 2.0);
+		}
+
+		return std::fabs(ballPos.y - rect.top) <= BALL_SIZE / 2.0;
 	}
 }
+
+
+	
