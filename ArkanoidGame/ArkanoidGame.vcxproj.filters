@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{d7cbec9e-75aa-416c-8c67-4f4d0f093f5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameMain.cpp">
@@ -46,37 +49,61 @@
     <ClCompile Include="Ball.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
-      <Filter>Sources</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameSettings.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="GameStatePlaying.h">
-      <Filter>Sources</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameStateGameOver.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="GameStatePauseMenu.h">
-      <Filter>Sources</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameStateMainMenu.h">
-      <Filter>Sources</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.h">
-      <Filter>Sources</Filter>
+    <ClInclude Include="GameStatePauseMenu.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStatePlaying.h">
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameStateRecords.h">
-      <Filter>Sources</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h" />
-    <ClInclude Include="Platform.h" />
-    <ClInclude Include="Text.h" />
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="GameState.h" />
-    <ClInclude Include="Ball.h" />
+    <ClInclude Include="Menu.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
