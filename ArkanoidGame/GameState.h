@@ -13,6 +13,7 @@ namespace ArkanoidGame
 		GameOver,
 		ExitDialog,
 		Records,
+		GameWin
 	};
 
 	class GameState
@@ -26,7 +27,8 @@ namespace ArkanoidGame
 		~GameState();
 
 		GameState& operator= (const GameState& state) = delete;
-		GameState& operator= (GameState&& state) noexcept {
+		GameState& operator= (GameState&& state) noexcept 
+		{
 			type = state.type;
 			data = std::move(state.data);
 			isExclusivelyVisible = state.isExclusivelyVisible;
@@ -41,7 +43,8 @@ namespace ArkanoidGame
 		}
 
 		template<class T>
-		T* GetData() const {
+		T* GetData() const 
+		{
 			return static_cast<T>(data);
 		}
 
@@ -49,9 +52,6 @@ namespace ArkanoidGame
 		void Draw(sf::RenderWindow& window);
 		void HandleWindowEvent(sf::Event& event);
 
-	private:
-		void CleanUp();
-		void* CopyData(const GameState& state) const;
 
 	private:
 		GameStateType type = GameStateType::None;

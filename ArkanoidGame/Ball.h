@@ -7,12 +7,12 @@ namespace ArkanoidGame
 	class Ball : public GameObject
 	{
 	public:
-		Ball() = default;
+		Ball(const sf::Vector2f& position);
 
-		void Init() override;
 		void Update(float timeDelta)override;
 
-		void ReboundFromPlatform();
+		void InvertDirectionX();
+		void InvertDirectionY();
 
 	private:
 		sf::Vector2f direction;

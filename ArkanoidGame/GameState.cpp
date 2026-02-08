@@ -1,3 +1,4 @@
+#include "GameStateWinData.h"
 #include "GameState.h"
 #include "GameStatePlaying.h"
 #include "GameStateGameOver.h"
@@ -38,6 +39,11 @@ namespace ArkanoidGame
 		case GameStateType::Records:
 		{
 			data = std::make_unique<GameStateRecordsData>();
+			break;
+		}
+		case GameStateType::GameWin:
+		{
+			data = std::make_unique<GameStateGameWinData>();
 			break;
 		}
 		default:

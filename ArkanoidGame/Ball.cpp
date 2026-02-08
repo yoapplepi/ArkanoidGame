@@ -1,7 +1,6 @@
 #include "Ball.h"
 #include "GameSettings.h"
 #include "Sprite.h"
-#include <assert.h>
 
 namespace
 {
@@ -10,18 +9,16 @@ namespace
 
 namespace ArkanoidGame
 {
-	void Ball::Init()
+
+	Ball::Ball(const sf::Vector2f& position)
+		: GameObject(TEXTURES_PATH + TEXTURE_ID + ".png", position, BALL_SIZE, BALL_SIZE)
 	{
-		assert(texture.loadFromFile(TEXTURES_PATH + TEXTURE_ID + ".png"));
-
-		InitSprite(sprite, BALL_SIZE, BALL_SIZE, texture);
-		sprite.setPosition({ SCREEN_WIDTH / 2.0, SCREEN_HEIGHT - PLATFORM_HEIGHT - BALL_SIZE / 2.f });
-
-		const float angle = 45.f + rand() % 90; // [45, 135] degree
+		const float angle = 45.f + rand() % 90; 
 		const auto pi = std::acos(-1.f);
 		direction.x = std::cos(pi / 180.f * angle);
 		direction.y = std::sin(pi / 180.f * angle);
 	}
+	
 
 	void Ball::Update(float timeDelta)
 	{
@@ -38,7 +35,12 @@ namespace ArkanoidGame
 		}
 	}
 
-	void Ball::ReboundFromPlatform()
+	void Ball::InvertDirectionX()
+	{
+		direction.x *= -1;
+	}
+
+	void Ball::InvertDirectionY()
 	{
 		direction.y *= -1;
 	}
