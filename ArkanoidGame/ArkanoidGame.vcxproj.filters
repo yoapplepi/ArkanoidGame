@@ -64,7 +64,7 @@
     <ClCompile Include="GameStateWinData.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Colladible.h">
+    <ClCompile Include="Collidable.h">
       <Filter>Headers</Filter>
     </ClCompile>
   </ItemGroup>

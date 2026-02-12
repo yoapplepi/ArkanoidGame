@@ -1,5 +1,7 @@
 #include "Block.h"
 #include "Sprite.h"
+#include <assert.h>
+#include "Randomazier.h"
 
 namespace
 {
