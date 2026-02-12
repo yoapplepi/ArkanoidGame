@@ -196,6 +196,7 @@
     <ClInclude Include="GameStatePlaying.h" />
     <ClInclude Include="GameStateRecords.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Randomazier.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Vector.h" />

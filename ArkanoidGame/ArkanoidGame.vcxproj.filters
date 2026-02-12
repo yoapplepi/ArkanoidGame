@@ -126,5 +126,8 @@
     <ClInclude Include="GameStateWinData.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Randomazier.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
