@@ -29,10 +29,9 @@ namespace ArkanoidGame
 		auto it = sortedRecordsTable.rbegin();
 		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && it != sortedRecordsTable.rend(); ++i, ++it) 
 		{
-			tableTexts.emplace_back(); // Create text in place
+			tableTexts.emplace_back(); 
 			sf::Text& text = tableTexts.back();
 
-			// We can use streams for writing into string and reading from it
 			std::stringstream sstream;
 			sstream << i + 1 << ". " << it->second << ": " << it->first;
 			text.setString(sstream.str());
