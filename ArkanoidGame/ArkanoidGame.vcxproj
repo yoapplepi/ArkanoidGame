@@ -187,6 +187,7 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateData.h" />
     <ClInclude Include="GameStateWinData.h" />
+    <ClInclude Include="IDelay.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameSettings.h" />

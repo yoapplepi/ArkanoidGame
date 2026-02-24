@@ -32,4 +32,5 @@ namespace ArkanoidGame
 	extern const char* PLAYER_NAME;
 
 	const std::string GAME_NAME = "ArkanoidGame";
+	const float BREAK_DELAY = 1.f;
 }
