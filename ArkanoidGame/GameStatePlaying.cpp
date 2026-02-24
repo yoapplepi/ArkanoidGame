@@ -50,35 +50,39 @@ namespace ArkanoidGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
-		static auto updateFunc = [timeDelta](auto obj) {obj->Update(timeDelta);};
-
+		static auto updateFunc = [timeDelta](auto obj) { obj->Update(timeDelta); };
 		std::for_each(gameObjects.begin(), gameObjects.end(), updateFunc);
+		std::for_each(blocks.begin(), blocks.end(), updateFunc);
 
-		std::shared_ptr <Platform> platform = std::dynamic_pointer_cast<Platform>(gameObjects[0]);
+		std::shared_ptr<Platform> platform = std::dynamic_pointer_cast<Platform>(gameObjects[0]);
 		std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(gameObjects[1]);
 
 		auto isCollision = platform->CheckCollision(ball);
 
 		bool invertDirectionX = false;
 		bool invertDirectionY = false;
-
 		bool hasBrokeOneBlock = false;
-		blocks.erase(
-			std::remove_if(blocks.begin(), blocks.end(),
-				[ball, &hasBrokeOneBlock, &invertDirectionX, &invertDirectionY, this](auto block) 
-				{
-					if ((!hasBrokeOneBlock) && block->CheckCollision(ball)) 
-					{
-						hasBrokeOneBlock = true;
-						const auto ballPos = ball->GetPosition();
-						const auto blockRect = block->GetRect();
 
-						GetBallInverse(ballPos, blockRect, invertDirectionX, invertDirectionY);
-					}
-					return block->IsBroken();
-				}),
-			blocks.end()
-					);
+		blocks.erase(
+		  std::remove_if(blocks.begin(), blocks.end(),
+			 [&](auto block) 
+			 {
+				if (!hasBrokeOneBlock && block->CheckCollision(ball)) 
+				{
+				   block->OnHit();
+
+				   auto glass = std::dynamic_pointer_cast<GlassBlock>(block);
+					
+				   if (!glass) 
+				   {
+					  hasBrokeOneBlock = true;
+					  GetBallInverse(ball->GetPosition(), block->GetRect(), invertDirectionX, invertDirectionY);
+				   }
+				}
+				return block->IsBroken();
+			 }),
+		  blocks.end()
+	   );
 
 		if (invertDirectionX) 
 			ball->InvertDirectionX();
@@ -125,10 +129,17 @@ namespace ArkanoidGame
 		{
 			for (int col = 0; col < BLOCKS_COUNT_IN_ROW; ++col)
 			{
-				blocks.emplace_back(std::make_shared<SlowBrakeBlock>(
-					sf::Vector2f({ BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT), 
-						100.f + row * BLOCK_HEIGHT })));
-			}
+				sf::Vector2f pos(BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT), 
+							  100.f + row * BLOCK_HEIGHT);
+
+				if (row == 0)
+					blocks.emplace_back(std::make_shared<DurabilityBlock>(pos));
+				
+				else if (row == 1) 
+					blocks.emplace_back(std::make_shared<GlassBlock>(pos));
+				
+				else 
+					blocks.emplace_back(std::make_shared<Block>(pos, sf::Color::Green, 1));			}
 		}
 		
 		for (int col = 0; col < 3; ++col) 
