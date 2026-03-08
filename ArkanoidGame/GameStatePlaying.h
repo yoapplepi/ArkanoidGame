@@ -4,6 +4,7 @@
 #include "Platform.h"
 #include "Ball.h"
 #include "GameStateData.h"
+#include "Bonus.h"
 
 
 namespace ArkanoidGame
@@ -23,6 +24,7 @@ namespace ArkanoidGame
 		void createBlock();
 		void GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, 
 			bool& needInverseDirX, bool& needInverseDirY);
+		void ApplyBonusEffect(BonusType type, std::shared_ptr<Ball> ball, std::shared_ptr<Platform> platform);
 		
 		sf::Texture appleTexture;
 		sf::Texture rockTexture;
@@ -39,7 +41,8 @@ namespace ArkanoidGame
 
 		sf::Sound gameOverSound;
 		
-		
+		std::vector<std::unique_ptr<Bonus>> activeBonuses;
+		int currentScore = 0;
 	};
 
 }

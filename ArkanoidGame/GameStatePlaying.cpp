@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <filesystem>
 #include <sstream>
+#include "Block.h"
+#include "GameSettings.h"
 
 namespace ArkanoidGame
 {
@@ -70,6 +72,17 @@ namespace ArkanoidGame
 				if (!hasBrokeOneBlock && block->CheckCollision(ball)) 
 				{
 				   block->OnHit();
+					
+					if (block -> IsBroken())
+					{
+						currentScore += 10;
+						if (rand() % 100 < 100)
+						{
+							sf::Vector2f spawnPos = block->GetPosition(); 
+							auto newBonus = BonusFactory::createRandomBonus(spawnPos);
+							activeBonuses.push_back(std::move(newBonus));
+						}
+					}
 
 				   auto glass = std::dynamic_pointer_cast<GlassBlock>(block);
 					
@@ -94,15 +107,37 @@ namespace ArkanoidGame
 		const bool isGameOver = !isCollision && ball->GetPosition().y > platform->GetRect().top;
 		Game& game = Application::Instance().GetGame();
 
-		if (isGameWin) 
+		if (isGameWin || isGameOver) 
 		{
-			game.PushState(GameStateType::GameWin, false);
+			game.UpdateRecord("Player", currentScore); 
+    
+			if (isGameWin) 
+				game.PushState(GameStateType::GameWin, false);
+			
+			
+			else 
+				game.PushState(GameStateType::GameOver, false);
 		}
 		
-		else if (isGameOver) 
+		
+		for (auto it = activeBonuses.begin(); it != activeBonuses.end();)
 		{
-			gameOverSound.play();
-			game.PushState(GameStateType::GameOver, false);
+			(*it)->update(timeDelta);
+			
+			if ((*it)->getBounds().intersects(platform->GetRect())) 
+			{
+				ApplyBonusEffect((*it)->getType(), ball, platform); 
+        
+				it = activeBonuses.erase(it); 
+			}
+			else if ((*it)->getBounds().top > SCREEN_HEIGHT)
+			{
+				it = activeBonuses.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 
@@ -114,11 +149,16 @@ namespace ArkanoidGame
 		std::for_each(gameObjects.begin(), gameObjects.end(), drawFunc);
 		std::for_each(blocks.begin(), blocks.end(), drawFunc);
 		
-		scoreText.setString("Score: " + std::to_string(gameObjects.size() - 2));
+		scoreText.setString("Score: " + std::to_string(currentScore));
 		scoreText.setPosition(10.f, 10.f);
 		window.draw(scoreText);
 		inputHintText.setPosition(SCREEN_WIDTH - 10.f, 10.f);
 		window.draw(inputHintText);
+		
+		for (auto& bonus : activeBonuses)
+		{
+			bonus->draw(window, sf::RenderStates::Default);
+		}
 	}
 	
 	void GameStatePlayingData::createBlock() 
@@ -148,7 +188,8 @@ namespace ArkanoidGame
 					100.f + row * BLOCK_HEIGHT })));
 	}
 
-	void GameStatePlayingData::GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, bool& needInverseDirX, bool& needInverseDirY) {
+	void GameStatePlayingData::GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, bool& needInverseDirX, bool& needInverseDirY) 
+	{
 
 		if (ballPos.y > blockRect.top + blockRect.height)
 		{
@@ -162,6 +203,11 @@ namespace ArkanoidGame
 		{
 			needInverseDirX = true;
 		}
+	}
+
+	void GameStatePlayingData::ApplyBonusEffect(BonusType type, std::shared_ptr<Ball> ball, std::shared_ptr<Platform> platform)
+	{
+		
 	}
 }
 
