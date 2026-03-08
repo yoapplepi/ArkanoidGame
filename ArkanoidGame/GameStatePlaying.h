@@ -45,6 +45,8 @@ namespace ArkanoidGame
 		int currentScore = 0;
 		
 		bool isFragileMode = false;
+		float platformTimer = 0.f;
+		int lives = 3;
 	};
 
 }

@@ -70,4 +70,9 @@ namespace ArkanoidGame
 		}
 		return false;
 	}
+	
+	void Platform::SetScale(float scale)
+	{
+		sprite.setScale(scale, 1.0f);
+	}
 }

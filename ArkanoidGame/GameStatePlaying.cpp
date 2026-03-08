@@ -52,6 +52,15 @@ namespace ArkanoidGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
+		if (platformTimer > 0) 
+		{
+			platformTimer -= timeDelta;
+			if (platformTimer <= 0) 
+			{
+				std::dynamic_pointer_cast<Platform>(gameObjects[0])->SetScale(1.0f);
+			}
+		}
+		
 		static auto updateFunc = [timeDelta](auto obj) { obj->Update(timeDelta); };
 		std::for_each(gameObjects.begin(), gameObjects.end(), updateFunc);
 		std::for_each(blocks.begin(), blocks.end(), updateFunc);
@@ -82,19 +91,22 @@ namespace ArkanoidGame
 		{
 			if (!hasBrokeOneBlock && block->CheckCollision(ball)) 
 			{
-				block->OnHit();
-                
-				auto unbreakable = std::dynamic_pointer_cast<UnbreackableBlock>(block);
-                
-				if (unbreakable) 
+				if (ball->IsFireBall()) 
 				{
-					hasBrokeOneBlock = true;
-					GetBallInverse(ball->GetPosition(), block->GetRect(), invertDirectionX, invertDirectionY);
+					while (!block->IsBroken()) 
+					{
+						block->OnHit();
+					}
 				}
-				else if (!ball->IsFireBall()) 
+				
+				else 
 				{
+					block->OnHit();
+        
+					auto unbreakable = std::dynamic_pointer_cast<UnbreackableBlock>(block);
 					auto glass = std::dynamic_pointer_cast<GlassBlock>(block);
-					if (!glass) 
+
+					if (unbreakable || !glass) 
 					{
 						hasBrokeOneBlock = true;
 						GetBallInverse(ball->GetPosition(), block->GetRect(), invertDirectionX, invertDirectionY);
@@ -103,8 +115,20 @@ namespace ArkanoidGame
 
 				if (block->IsBroken())
 				{
-					currentScore += 10;
-					if (rand() % 100 < 50) 
+					if (std::dynamic_pointer_cast<GlassBlock>(block)) 
+					{
+						currentScore += 5;
+					}
+					else if (std::dynamic_pointer_cast<DurabilityBlock>(block)) 
+					{
+						currentScore += 20;
+					}
+					else 
+					{
+						currentScore += 10; 
+					}
+
+					if (rand() % 100 < 10) 
 					{
 						activeBonuses.push_back(BonusFactory::createRandomBonus(block->GetPosition()));
 					}
@@ -125,16 +149,26 @@ namespace ArkanoidGame
 		const bool isGameOver = !isCollision && ball->GetPosition().y > platform->GetRect().top;
 		Game& game = Application::Instance().GetGame();
 
-		if (isGameWin || isGameOver) 
+		if (isGameWin) 
 		{
 			game.UpdateRecord("Player", currentScore); 
-    
-			if (isGameWin) 
-				game.PushState(GameStateType::GameWin, false);
+			game.PushState(GameStateType::GameWin, false);
+		}
+		
+		else if (ball->GetPosition().y > platform->GetRect().top + 20)
+		{
+			lives--;
 			
-			
-			else 
+			if (lives > 0)
+			{
+				ball->SetPosition({SCREEN_WIDTH/2.f, SCREEN_HEIGHT - 150.f});
+			}
+
+			else
+			{
+				game.UpdateRecord("Player", currentScore);
 				game.PushState(GameStateType::GameOver, false);
+			}
 		}
 		
 		
@@ -228,6 +262,11 @@ namespace ArkanoidGame
 		if (type == BonusType::FireBall) 
 		{
 			ball->SetIsFireball(true); 
+		}
+		else if (type == BonusType::ExpandPaddle) 
+		{
+			platform->SetScale(1.5f); 
+			platformTimer = 7.0f; 
 		}
 	}
 }

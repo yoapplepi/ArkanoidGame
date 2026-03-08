@@ -21,6 +21,7 @@ namespace ArkanoidGame
 		
 		void SetIsFireball(bool value) {isFireBall = value;}
 		bool IsFireBall() const {return isFireBall;}
+		void SetPosition(const sf::Vector2f& position);
 		
 	private:
 		sf::Vector2f direction;

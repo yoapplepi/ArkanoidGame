@@ -2,6 +2,8 @@
 #include "Sprite.h"
 #include <assert.h>
 
+#include "Ball.h"
+
 namespace
 {
 	const std::string TEXTURE_ID = "platform";
@@ -83,5 +85,10 @@ namespace ArkanoidGame
 		auto gameObject = std::dynamic_pointer_cast<GameObject>(collidableObject);
 		assert(gameObject);
 		return GetRect().intersects(gameObject->GetRect());
+	}
+	
+	void Ball::SetPosition(const sf::Vector2f& position)
+	{
+		sprite.setPosition(position);
 	}
 }
