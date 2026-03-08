@@ -43,6 +43,8 @@ namespace ArkanoidGame
 		
 		std::vector<std::unique_ptr<Bonus>> activeBonuses;
 		int currentScore = 0;
+		
+		bool isFragileMode = false;
 	};
 
 }

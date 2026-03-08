@@ -19,9 +19,13 @@ namespace ArkanoidGame
 		bool GetCollision(std::shared_ptr<Colladiable> collidable) const  override;
 		void ChangeAngle(float x);
 		
+		void SetIsFireball(bool value) {isFireBall = value;}
+		bool IsFireBall() const {return isFireBall;}
+		
 	private:
 		sf::Vector2f direction;
 		void OnHit();
 		float lastAngle = 90;
+		bool isFireBall = false;
 	};
 }

@@ -15,6 +15,8 @@ namespace ArkanoidGame
 	Ball::Ball(const sf::Vector2f& position)
 		: GameObject(TEXTURES_PATH + TEXTURE_ID + ".png", position, BALL_SIZE, BALL_SIZE)
 	{
+		isFireBall = false;
+		
 		const float angle = 45.f + rand() % 90; 
 		const auto pi = std::acos(-1.f);
 		direction.x = std::cos(pi / 180.f * angle);
@@ -24,8 +26,15 @@ namespace ArkanoidGame
 
 	void Ball::Update(float timeDelta)
 	{
+		float currentSpeed = isFireBall ? (BALL_SPEED * 1.5F) : BALL_SPEED;
+		
 		const auto position = sprite.getPosition() + BALL_SPEED * timeDelta * direction;
 		sprite.setPosition(position);
+		
+		if (isFireBall)
+			sprite.setColor(sf::Color::Red);
+		else
+			sprite.setColor(sf::Color::White);
 
 		if (position.x - BALL_SIZE / 2.f <= 0 || position.x + BALL_SIZE / 2.f >= SCREEN_WIDTH) 
 			direction.x *= -1;

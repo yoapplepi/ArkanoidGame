@@ -58,6 +58,17 @@ namespace ArkanoidGame
 
 		std::shared_ptr<Platform> platform = std::dynamic_pointer_cast<Platform>(gameObjects[0]);
 		std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(gameObjects[1]);
+		
+		if (ball->IsFireBall()) 
+		{
+			static float fireballTimer = 0;
+			fireballTimer += timeDelta;
+			if (fireballTimer > 7.f)
+			{
+				ball->SetIsFireball(false);
+				fireballTimer = 0;
+			}
+		}
 
 		auto isCollision = platform->CheckCollision(ball);
 
@@ -66,36 +77,43 @@ namespace ArkanoidGame
 		bool hasBrokeOneBlock = false;
 
 		blocks.erase(
-		  std::remove_if(blocks.begin(), blocks.end(),
-			 [&](auto block) 
-			 {
-				if (!hasBrokeOneBlock && block->CheckCollision(ball)) 
+	std::remove_if(blocks.begin(), blocks.end(),
+		[&](auto block) 
+		{
+			if (!hasBrokeOneBlock && block->CheckCollision(ball)) 
+			{
+				block->OnHit();
+                
+				auto unbreakable = std::dynamic_pointer_cast<UnbreackableBlock>(block);
+                
+				if (unbreakable) 
 				{
-				   block->OnHit();
-					
-					if (block -> IsBroken())
-					{
-						currentScore += 10;
-						if (rand() % 100 < 100)
-						{
-							sf::Vector2f spawnPos = block->GetPosition(); 
-							auto newBonus = BonusFactory::createRandomBonus(spawnPos);
-							activeBonuses.push_back(std::move(newBonus));
-						}
-					}
-
-				   auto glass = std::dynamic_pointer_cast<GlassBlock>(block);
-					
-				   if (!glass) 
-				   {
-					  hasBrokeOneBlock = true;
-					  GetBallInverse(ball->GetPosition(), block->GetRect(), invertDirectionX, invertDirectionY);
-				   }
+					hasBrokeOneBlock = true;
+					GetBallInverse(ball->GetPosition(), block->GetRect(), invertDirectionX, invertDirectionY);
 				}
-				return block->IsBroken();
-			 }),
-		  blocks.end()
-	   );
+				else if (!ball->IsFireBall()) 
+				{
+					auto glass = std::dynamic_pointer_cast<GlassBlock>(block);
+					if (!glass) 
+					{
+						hasBrokeOneBlock = true;
+						GetBallInverse(ball->GetPosition(), block->GetRect(), invertDirectionX, invertDirectionY);
+					}
+				}
+
+				if (block->IsBroken())
+				{
+					currentScore += 10;
+					if (rand() % 100 < 50) 
+					{
+						activeBonuses.push_back(BonusFactory::createRandomBonus(block->GetPosition()));
+					}
+				}
+			}
+			return block->IsBroken();
+		}),
+	blocks.end()
+);
 
 		if (invertDirectionX) 
 			ball->InvertDirectionX();
@@ -207,7 +225,10 @@ namespace ArkanoidGame
 
 	void GameStatePlayingData::ApplyBonusEffect(BonusType type, std::shared_ptr<Ball> ball, std::shared_ptr<Platform> platform)
 	{
-		
+		if (type == BonusType::FireBall) 
+		{
+			ball->SetIsFireball(true); 
+		}
 	}
 }
 
