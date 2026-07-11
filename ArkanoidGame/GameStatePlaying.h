@@ -5,7 +5,7 @@
 #include "Ball.h"
 #include "GameStateData.h"
 #include "Bonus.h"
-
+#include "SerialPort.h"
 
 namespace ArkanoidGame
 {
@@ -47,6 +47,9 @@ namespace ArkanoidGame
 		bool isFragileMode = false;
 		float platformTimer = 0.f;
 		int lives = 3;
+		
+	private:
+		std::unique_ptr<SerialPort> arduino;
 	};
 
 }

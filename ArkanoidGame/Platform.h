@@ -12,13 +12,14 @@ namespace ArkanoidGame
 		Platform(const sf::Vector2f& position);
 
 		void Update(float timeDelta)override;
+		void Move(float speed);
 		
 		bool GetCollision(std::shared_ptr<Colladiable> collidable) const override;
 		void OnHit() override {}
 		bool CheckCollision(std::shared_ptr<Colladiable> collidable) override;
 		void SetScale(float scale);
 		
-	private:
-		void Move(float speed);
+	//private:
+		//void Move(float speed);
 	};
 }

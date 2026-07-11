@@ -8,6 +8,13 @@
 #include "GameStateData.h"
 #include <assert.h>
 
+#include "SFML/Window/Event.hpp"
+
+namespace sf
+{
+	class RenderWindow;
+}
+
 namespace ArkanoidGame
 {
 	GameState::GameState(GameStateType type, bool isExclusivelyVisible)

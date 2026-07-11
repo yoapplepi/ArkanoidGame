@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <filesystem>
 #include <sstream>
-#include "Block.h"
 #include "GameSettings.h"
 
 namespace ArkanoidGame
@@ -37,6 +36,7 @@ namespace ArkanoidGame
 		createBlock();
 		
 		gameOverSound.setBuffer(gameOverSoundBuffer);
+		arduino = std::make_unique<SerialPort>("\\\\.\\COM9");
 	}
 
 	void GameStatePlayingData::HandleWindowEvent(const sf::Event& event)
@@ -52,6 +52,26 @@ namespace ArkanoidGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
+		char incomingByte;
+		int bytesRead = arduino->readSerialPort(&incomingByte, 1);
+
+		if (bytesRead > 0)
+		{
+			std::shared_ptr<Platform> platform = std::dynamic_pointer_cast<Platform>(gameObjects[0]);
+      
+			if (platform)
+			{
+				if (incomingByte == 'L')
+				{
+					platform->Move(-timeDelta * PLATFORM_SPEED);
+				}
+				else if (incomingByte == 'R')
+				{
+					platform->Move(timeDelta * PLATFORM_SPEED);
+				}
+			}
+		}
+		
 		if (platformTimer > 0) 
 		{
 			platformTimer -= timeDelta;

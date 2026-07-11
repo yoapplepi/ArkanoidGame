@@ -176,6 +176,7 @@
     <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="GameStateRecords.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="SerialPort.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
   </ItemGroup>
@@ -200,6 +201,7 @@
     <ClInclude Include="GameStateRecords.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Randomaizer.h" />
+    <ClInclude Include="SerialPort.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Vector.h" />
